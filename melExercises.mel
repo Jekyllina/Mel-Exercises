@@ -1,0 +1,33 @@
+global proc DS_CreateObjects()
+{  
+    string $materialRed = `shadingNode -asShader lambert`;
+    setAttr ($materialRed + ".color") -type double3 0.672 0 0;  
+
+    string $materialGreen = `shadingNode -asShader lambert`;
+    setAttr ($materialGreen + ".color") -type double3 0.0155 0.672 0; 
+
+    string $materialBlue = `shadingNode -asShader blinn`;
+    setAttr ($materialBlue + ".color") -type double3 0 0.0237 0.672; 
+
+    string $materials[] = {$materialRed, $materialGreen, $materialBlue};
+
+    for($i=0; $i < 3; $i=$i+1)
+    {
+        polySphere;
+        move -r -x ($i*5);
+        
+        polyCube;
+        move -r -x ($i*5) -y 3;               
+        hyperShade -assign $materials[$i];
+    }
+}
+
+global proc DS_MoveObject()
+{
+    string $sel[] = `ls -sl`;
+
+    for($objs in $sel)
+    {     
+        move -r 0 1.5 0 $objs;
+    }
+}
