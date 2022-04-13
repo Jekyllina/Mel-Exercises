@@ -23,45 +23,27 @@ global proc DS_CreateObjects()
 }
 
 global proc DS_MoveObject()
-{
-    string $sel[] = `ls -sl`;
-
-    for($objs in $sel)
-    {     
-        move -r 0 1.5 0 $objs;
-    }
+{    
+    move -r 0 1.5 0;
 }
 
-global proc DS_CountObjectsAndNodes()
+global proc DS_CountObjects()
 {
     string $sel[] = `ls -sl`;
-    int $counter = 0;
-
-    for($objs in $sel)
-    {     
-        $counter = $counter + 1;
-    }
-
-    print("You have selected " + $counter + "objects \n");
+    
+    print("You have selected " + size($sel) + " objects \n");
 }
 
-global proc DS_TypeOfNodeSelected()
-{
-    string $sel[] = `ls -sl`;
-
-    int $nJoints;
-    int $nMeshes;
-    int $nTransforms;
-        
-    for($item in $sel)
-    {     
-        
-    }
-
-    print("You have selected " + $counter + "objects \n");
+global proc DS_TypeOfSelected()
+{    
+    string $nJoints[] = `ls -sl -type("joint")`;
+    string $nMeshes[] = `ls -sl -type("mesh")`;
+    string $nTransforms[] = `ls -sl -type("transform")`;
+    
+    print("You have selected " + size($nJoints) + " joints, " + size($nMeshes) + " meshes and " + size($nTransforms) + " transforms \n");
 }
 
-global proc MyFirstUI() 
+global proc DS_WelcomeUI() 
 {
     string $win = "MyFirstWin";
 
@@ -70,13 +52,18 @@ global proc MyFirstUI()
         deleteUI $win;
     }
 
-    window -s 0 -w 200 -h 300 $win;
+    window -s 0 -w 300 -h 400 $win;
         columnLayout;      
             text -label "Name";
-            string $name = `textField -fn "obliqueLabelFont"`;     
-            button -l "Hello Button" -c print("Welcome " +$name + "\n");             
-            setParent..;
+            string $name = `textField -fn "obliqueLabelFont" -w 200 -h 30`;                
+            button -l "Hello Button" -w 80 -h 30 -c "DS_PrintName($name)";                       
         setParent..;
 
     showWindow $win;
+}
+
+proc DS_PrintName(string $name)
+{
+    string $username = `textField -q -text $name`;
+    print("Welcome " + $username + "\n");
 }
