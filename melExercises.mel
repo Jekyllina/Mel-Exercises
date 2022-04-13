@@ -31,3 +31,52 @@ global proc DS_MoveObject()
         move -r 0 1.5 0 $objs;
     }
 }
+
+global proc DS_CountObjectsAndNodes()
+{
+    string $sel[] = `ls -sl`;
+    int $counter = 0;
+
+    for($objs in $sel)
+    {     
+        $counter = $counter + 1;
+    }
+
+    print("You have selected " + $counter + "objects \n");
+}
+
+global proc DS_TypeOfNodeSelected()
+{
+    string $sel[] = `ls -sl`;
+
+    int $nJoints;
+    int $nMeshes;
+    int $nTransforms;
+        
+    for($item in $sel)
+    {     
+        
+    }
+
+    print("You have selected " + $counter + "objects \n");
+}
+
+global proc MyFirstUI() 
+{
+    string $win = "MyFirstWin";
+
+    if(`window -q -ex $win`)
+    {
+        deleteUI $win;
+    }
+
+    window -s 0 -w 200 -h 300 $win;
+        columnLayout;      
+            text -label "Name";
+            string $name = `textField -fn "obliqueLabelFont"`;     
+            button -l "Hello Button" -c print("Welcome " +$name + "\n");             
+            setParent..;
+        setParent..;
+
+    showWindow $win;
+}
