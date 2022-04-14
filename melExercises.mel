@@ -29,7 +29,7 @@ global proc DS_MoveObject()
 
 global proc DS_CountObjects()
 {
-    string $sel[] = `ls -sl`;
+    string $sel[] = `ls -sl -objectsOnly`;
     
     print("You have selected " + size($sel) + " objects \n");
 }
@@ -41,6 +41,11 @@ global proc DS_TypeOfSelected()
     string $nTransforms[] = `ls -sl -type("transform")`;
     
     print("You have selected " + size($nJoints) + " joints, " + size($nMeshes) + " meshes and " + size($nTransforms) + " transforms \n");
+}
+
+global proc DS_PrintName(string $name)
+{    
+    print("Welcome " + $name + "\n");
 }
 
 global proc DS_WelcomeUI() 
@@ -56,14 +61,8 @@ global proc DS_WelcomeUI()
         columnLayout;      
             text -label "Name";
             string $name = `textField -fn "obliqueLabelFont" -w 200 -h 30`;                
-            button -l "Hello Button" -w 80 -h 30 -c "DS_PrintName($name)";                       
+            button -l "Hello Button" -w 80 -h 30 -c ("DS_PrintName(`textField -q -text " + $name+"`)") ($name);                       
         setParent..;
 
     showWindow $win;
-}
-
-proc DS_PrintName(string $name)
-{
-    string $username = `textField -q -text $name`;
-    print("Welcome " + $username + "\n");
 }
