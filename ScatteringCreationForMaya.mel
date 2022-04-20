@@ -1,0 +1,106 @@
+global proc AIV_CreationTool()
+{
+    string $win = "AIV_Creation_Tool";
+
+    if(`window -q -ex $win`)
+    {
+        deleteUI $win;
+    }
+
+    window -s 0 -w 220 -h 350 $win;
+        columnLayout;     
+            rowLayout -nc 2 -cat 1 "left" 20 -cat 2 "left" 32;  
+                text -label "Number of Objects";
+                text -label "Spacing";
+            setParent..;
+
+            rowLayout -nc 2 -cat 1 "left" 40 -cat 2 "left" 55;
+                string $nObjs = `textField -w 50 -h 30`;  
+                string $spacing = `textField -w 50 -h 30`;
+            setParent..;    
+
+            separator -h 16;      
+            rowLayout -nc 2 -cat 1 "left" 60;     
+            button -l "Creation" -w 100 -h 30 -c ("AIV_RandomDuplicateSelection(`ls -sl`, `textField -q -text " + $nObjs+"`, `textField -q -text " + $spacing+"`)");                       
+            setParent..;    
+
+            separator -h 60;           
+            rowLayout -nc 1 -cat 1 "left" 10;
+            text -label "Randomize Parameters";
+            setParent..;
+        setParent..; 
+
+        columnLayout;
+            string $pos = `checkBox -label "Position"`;
+            string $rot = `checkBox -label "Rotation"`;
+            string $scale = `checkBox -label "Scale"`;
+
+            separator -h 16;      
+            rowLayout -nc 2 -cat 1 "left" 60;     
+            button -l "Randomize" -w 100 -h 30 -c ("AIV_Randomize_Selection(`ls -sl`, `textField -q -text " + $spacing+"`, `checkBox -q -v " + $pos+"`, `checkBox -q -v " + $rot+"`, `checkBox -q -v " + $scale+"`)");                       
+            setParent..; 
+        setParent;
+            
+    showWindow $win;    
+}
+
+global proc AIV_RandomDuplicateSelection(string $sel[], int $nrDuplicates, float $spacing)
+{   
+    if(size($sel) > 1)
+    {
+        error "Error: Multiple Selects selected. Select a single object";
+    }
+
+    for($i=0; $i < $nrDuplicates; $i++)
+    {
+        string $newObjs[] = `duplicate -rr $sel`;
+
+        vector $newPos = `rand <<-$spacing, -$spacing, -$spacing>> <<$spacing, $spacing, $spacing>>`;
+        move -r ($newPos.x) 0 ($newPos.z) $newObjs;
+
+        float $newRotY = `rand -180 180`;
+        rotate -a 0 $newRotY 0 $newObjs;
+
+        float $newScaleY = `rand 1 10`;
+        scale -a 1 $newScaleY 1 $newObjs;
+
+        move -r 0 ($newScaleY * 0.5) 0 $newObjs;  
+    }    
+
+    select -r $sel;   
+}
+
+global proc AIV_Randomize_Selection(string $sel[], int $spacing, int $position, int $rotation, int $scale)
+{   
+    if(size($sel) < 1)
+    {
+        error "Error: Select at least one object";
+    }
+
+    if($position == 1)
+    {
+        for($i=0; $i < size($sel); $i++)
+        {
+            vector $newPos = `rand <<-$spacing, -$spacing, -$spacing>> <<$spacing, $spacing, $spacing>>`;
+            move -r ($newPos.x) 0 ($newPos.z) $sel[$i];
+        }
+    }
+
+    if($rotation == 1)
+    {
+        for($i=0; $i < size($sel); $i++)
+        {
+            float $newRotY = `rand -180 180`;
+            rotate -a 0 $newRotY 0 $sel[$i];
+        }
+    }
+
+    if($scale == 1)
+    {
+        for($i=0; $i < size($sel); $i++)
+        {
+            float $newScaleY = `rand 1 10`;
+            scale -a 1 $newScaleY 1 $sel[$i];
+        }        
+    }      
+}

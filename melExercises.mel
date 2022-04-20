@@ -60,7 +60,8 @@ global proc DS_WelcomeUI()
     window -s 0 -w 300 -h 400 $win;
         columnLayout;      
             text -label "Name";
-            string $name = `textField -fn "obliqueLabelFont" -w 200 -h 30`;                
+            string $name = `textField -fn "obliqueLabelFont" -w 200 -h 30`;        
+            separator -h 30;        
             button -l "Hello Button" -w 80 -h 30 -c ("DS_PrintName(`textField -q -text " + $name+"`)");                       
         setParent..;
 
